@@ -1,23 +1,25 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const passport = require("passport");
 
-const app = express();
 const db = require("./config/keys").MongoURI;
-
 const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
 const posts = require("./routes/api/posts");
 
+const app = express();
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
+
+app.use(passport.initialize());
+require("./config/passport")(passport);
 mongoose
   .connect(db)
   .then(() => {
     console.log("MongoDB connected!");
   })
   .catch(err => console.log("DB connect Failed"));
-
-app.get("/", (req, res) => {
-  res.send("Hello Worlsssd!");
-});
 
 app.use("/api/users", users);
 app.use("/api/profile", profile);
