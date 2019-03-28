@@ -6,6 +6,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
+const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
+
 //@route: GET /api/users/test
 //@desc: test route
 //@access: public
@@ -18,11 +21,15 @@ router.get("/test", (req, res) => {
 //@access: public
 router.post("/register", (req, res) => {
   //check if email exists
-  console.log("post called");
-
+  //console.log("post called");
+  const { errors, isValid } = validateRegisterInput(req.body);
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
-      res.status(400).json({ email: "Email alread exists." });
+      errors.email = "Email alread exists.";
+      res.status(400).json(errors);
     } else {
       const avatar = gravatar.url(req.body.email, {
         s: "200", //size
@@ -58,10 +65,14 @@ router.post("/register", (req, res) => {
 router.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-
+  const { errors, isValid } = validateLoginInput(req.body);
+  if (!isValid) {
+    res.status(400).json(errors);
+  }
   User.findOne({ email: email }).then(user => {
     if (!user) {
-      return res.status(404).json({ email: "User not found." });
+      errors.email = "User not found.";
+      return res.status(404).json(errors);
     } else {
       bcrypt.compare(password, user.password).then(isMatch => {
         if (isMatch) {
@@ -78,7 +89,8 @@ router.post("/login", (req, res) => {
             });
           });
         } else {
-          return res.status(400).json({ password: "Password incorrect." });
+          errors.password = "Password incorrect.";
+          return res.status(400).json(errors);
         }
       });
     }
@@ -92,8 +104,21 @@ router.get(
   "/current",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.json({ msg: "success" });
+    res.json({
+      id: req.user._id,
+      name: req.user.name,
+      email: req.user.email
+    });
   }
 );
 
+// {
+//   "_id": "5c94a8987db9541a809b2acf",
+//   "name": "Sophie Tsai",
+//   "email": "shihfan.tsai@gmail.com",
+//   "password": "$2a$10$W3xWZGlM7ECNTzoywWcIsuVAdzhBUoz6vX6x2vNqNaWwSnaRx2jwK",
+//   "avatar": "//www.gravatar.com/avatar/6ed9f619420cff24b285a24d8480d8b6?s=200&r=pg&d=mm",
+//   "date": "2019-03-22T09:19:20.848Z",
+//   "__v": 0
+// }
 module.exports = router;
