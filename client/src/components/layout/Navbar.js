@@ -17,6 +17,11 @@ class Navbar extends Component {
     const LogoutLink = (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
+          <Link to="/dashboard" className="nav-link">
+            Dashboard
+          </Link>
+        </li>
+        <li className="nav-item">
           <a href="#" onClick={this.onLogoutClick.bind(this)}>
             <img
               className="rounded-circle"
@@ -25,6 +30,15 @@ class Navbar extends Component {
               title="You must have an email connected to garvatar to display your image"
               style={{ width: "25px", marginRight: "5px" }}
             />
+          </a>
+        </li>
+        <li className="nav-item">
+          <a
+            href="#"
+            onClick={this.onLogoutClick.bind(this)}
+            className="nav-link"
+          >
+            Logout
           </a>
         </li>
       </ul>
