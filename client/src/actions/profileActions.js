@@ -2,6 +2,7 @@ import axios from "axios";
 
 import {
   GET_PROFILE,
+  GET_PROFILES,
   PROFILE_LOADING,
   GET_ERRORS,
   CLEAR_PROFILE,
@@ -129,4 +130,41 @@ export const deleteEducation = edu_id => dispatch => {
         })
       );
   }
+};
+//get all profiles
+export const getProfiles = () => dispatch => {
+  dispatch(setProfoleLoading());
+  axios
+    .get("/api/profile/all")
+    .then(res =>
+      dispatch({
+        type: GET_PROFILES,
+        payload: res.data
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_PROFILES,
+        payload: {}
+      })
+    );
+};
+
+///api/profie/handle/:handle
+export const getProfileByHandle = handle => dispatch => {
+  dispatch(setProfoleLoading());
+  axios
+    .get(`/api/profile/handle/${handle}`)
+    .then(res =>
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_PROFILE,
+        payload: null
+      })
+    );
 };
