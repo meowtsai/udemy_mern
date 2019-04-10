@@ -149,7 +149,7 @@ router.post(
         Post.findById(req.params.id)
           .then(post => {
             if (
-              post.likes.filter(lile => like.user.toString() === req.user.id)
+              post.likes.filter(like => like.user.toString() === req.user.id)
                 .length === 0
             ) {
               return res
@@ -167,7 +167,7 @@ router.post(
             }
           })
           .catch(err => {
-            return res.status(404).json({ errors: "Post not found" });
+            return res.status(404).json({ errors: "Post not found" + err });
           });
       })
       .catch(err => {

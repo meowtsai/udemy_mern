@@ -3,15 +3,11 @@ const isEmpty = require("./is-empty");
 
 module.exports = function validatePostInput(data) {
   let errors = {};
-
+  //console.log("post_input", data);
   data.text = !isEmpty(data.text) ? data.text : "";
 
   if (isEmpty(data.text)) {
-    errors.email = "Text field is required.";
-  }
-
-  if (!Validator.isLength(data.text, { min: 10, max: 300 })) {
-    errors.text = "Post field must be between 10 ~ 300 characters.";
+    errors.text = "Text field is required.";
   }
 
   return {
