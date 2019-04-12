@@ -2,3 +2,4 @@
 package-lock.json
 /devconnector_theme
 /client/node_modules
+/config/keys_dev.js
